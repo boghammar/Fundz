@@ -6,3 +6,7 @@ body {
 a {
   color: #00B7FF;
 }
+
+.asc { background: rgb(255, 94, 0)}
+.desc { background: rgb(238, 255, 0)}
+.sortable {cursor: pointer;}

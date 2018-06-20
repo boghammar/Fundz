@@ -3,9 +3,13 @@ html
   head
     title= title
     link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='https://use.fontawesome.com/releases/v5.0.13/css/all.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascript/fundz.js')
   body
     div.container
       block content
-      div.footer (c) anders@boghammar.com, 2018
+    div.navbar.navbar-default.navbar-fixed-bottom 
+      div.container
+        p.navbar-text.pull-left &copy; 2018 - anders@boghammar.com 
 

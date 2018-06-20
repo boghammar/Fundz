@@ -3,20 +3,36 @@ extends layout
 block content
   div.content
     h1= title
-    h3= tableName
-    table.table.table-striped
+    p This is the list of funds in list #[span.font-weight-bold #{listName}]
+    table.table.table-striped.table-bordered(id='fundlist')
       thead
         tr
-          th Name
-          th Average
-          th 3 Months
-          th Updated
-          th SMA6P
-          th SMA10P
+          th.sortable(onclick="sortTable(0)") 
+            i
+            span Name
+          th.sortable(onclick="sortTable(1)") 
+            i
+            span Type
+          th.sortable(onclick="sortTable(2)") 
+            i
+            span Fee
+          th.sortable(onclick="sortTable(3)") 
+            i
+            span Months
+          th.sortable(onclick="sortTable(4)") 
+            i
+            span Updated
+          th.sortable(onclick="sortTable(5)") 
+            i
+            span SMA6P
+          th.sortable(onclick="sortTable(6)") 
+            i
+            span SMA10P
       tbody
           each fund in funddata
             tr
               td=fund.name
+              td=fund.type
               td=fund.fee
               td=fund.threeMonths
               td=fund.updated
