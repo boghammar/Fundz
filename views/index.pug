@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  div.content
+    h1= title
+    h3= tableName
+    table.table.table-striped
+      thead
+        tr
+          th Name
+          th Average
+          th 3 Months
+          th Updated
+          th SMA6P
+          th SMA10P
+      tbody
+          each fund in funddata
+            tr
+              td=fund.name
+              td=fund.fee
+              td=fund.threeMonths
+              td=fund.updated
+              td=fund.sma6
+              td=fund.sma10
