@@ -9,29 +9,34 @@ block content
         tr
           th.sortable(onclick="sortTable(0)") 
             i
-            span Name
+            span Id
           th.sortable(onclick="sortTable(1)") 
             i
-            span Type
+            span Name
           th.sortable(onclick="sortTable(2)") 
             i
-            span Fee
+            span Type
           th.sortable(onclick="sortTable(3)") 
             i
-            span Months
+            span Fee
           th.sortable(onclick="sortTable(4)") 
             i
-            span Updated
+            span 3 Mon %
           th.sortable(onclick="sortTable(5)") 
             i
-            span SMA6P
+            span Updated
           th.sortable(onclick="sortTable(6)") 
             i
-            span SMA10P
+            span SMA6P %
+          th.sortable(onclick="sortTable(7)") 
+            i
+            span SMA10P %
       tbody
           each fund in funddata
             tr
-              td=fund.name
+              td=fund.id
+              td
+                a(href='https://www.avanza.se/fonder/om-fonden.html/' + fund.id target='_blank') #{fund.name}
               td=fund.type
               td=fund.fee
               td=fund.threeMonths

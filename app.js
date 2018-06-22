@@ -22,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Handle NPM modules, see https://stackoverflow.com/questions/26773767/purpose-of-installing-twitter-bootstrap-through-npm
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect JS bootstrap
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
+app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jquery
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

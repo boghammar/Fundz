@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title># avanza fonder</title>
+	<style>
+
+	#percentCount {
+		position: fixed;
+		top:0; left:0;
+		height: 5px;
+		line-height: 5px;
+		padding: 7px 10px;
+		width: 0%;
+		background: linear-gradient(to right, red, #0af);
+		backface-visibility: hidden;
+		will-change: width;
+		transition: all .3s ease-out;
+		color: #fff;
+		font-weight: bold;
+	}
+	#percentCount.complete {
+		opacity: 0;
+	}
+	
+	@keyframes pc {
+		0% { background: linear-gradient(to right, #0af, #3c3); }
+		100% { background: linear-gradient(to right, orange, #0af); }
+	}
+
+	@media(max-width:1500px) {
+		/* temp hide much things */
+		.priceFiveYearsAgo,
+		.priceThreeYearsAgo,
+		.priceOneWeekAgo,
+		.currency,
+		.SMA6,
+		.SMA10,
+		.changePercent,
+		.id
+		{ display:none; }
+	}
+
+	@media(max-width:1000px) {
+		.managementFee,
+		.priceOneMonthAgo,
+		.priceOneYearAgo,
+		.lastPriceUpdated,
+		.SMA6,
+		.SMA10
+		{ display: none; }
+	}
+
+
+	.hidden { display: none; }
+
+	* { font-family: monospace; color: #333 }
+	body { padding: 20px; background: #fff }
+	hr { border:0; height: 0; border-bottom: 1px solid #ddd margin: 20px 0 19px; }
+	table { width: 100%; border-spacing:0; border-collapse: collapse; font-size: 15px; margin-top: 20px; }
+	td,th { border: 1px solid #ddd; padding: 0 8px; line-height: 300%; }
+	th, tfoot td { background: #ffe; text-align: left; font-weight: normal; text-transform: uppercase; }
+	td a { display: inline-block; height: 100%; text-decoration: none; color: #111; }
+	td a:hover { color: #0af; }
+	th { cursor: pointer; }
+	tr:nth-child(even) td { background: #fafafa; }
+	th[data-sorted-direction] { background: #ffa; }
+	td.negative { color: red; }
+	
+	input, #btns button { padding: 5px; }
+	input.list { width: 400px; will-change: width; transition: width .2s ease; }
+	input.list.on { width: 800px; }
+	
+	tr:hover td { background: #ffa; }
+	tr.on td { background: #E3F2FD; }
+	
+	tfoot td:first-child { font-weight: bold; }
+	
+	/* buttons */
+	button { display: inline-block; }
+	button, input[type=button] {
+		background: none; border:0;
+		border: 1px solid #aaa;
+		background: aliceblue;
+		padding: 6px 12px;
+		margin: 0 0 0 0;
+		display: inline-block;
+	}
+	
+	button.on {
+		background: #0af; color:#fff;
+		border-color: #0af;
+	}
+	
+	/* clear cache button */
+	#btns #clear {
+		position: absolute;
+		right: 20px; top:20px;
+		background: #ffebee;
+	}
+	
+	/* button group */
+	.btn-group {
+		display: inline;
+	}
+	.btn-group button {
+		margin-right:-1px;
+	}
+	.btn-group button:active, .btn-group button:focus {
+		background: #0af; color: #fff;
+		border-color: #0af;
+	}
+	
+	
+	/* sortable */
+	table[data-sortable] th:not([data-sortable="false"]) {
+	  user-select: none;
+	}
+	table th { position: relative; }
+	table[data-sortable] th:after {
+	  content: "";
+	  visibility: hidden;
+	  display: inline-block;
+	  vertical-align: inherit;
+	  height: 0; width: 0;
+	  border-width: 5px;
+	  border-style: solid;
+	  border-color: transparent;
+	  position: absolute;
+	  right: 5px; top: 5px;
+	}
+	table[data-sortable] th[data-sorted="true"]:after {
+	  visibility: visible;
+	}
+	table[data-sortable] th[data-sorted-direction="descending"]:after {
+	  border-top-color: #0af;
+	}
+	table[data-sortable] th[data-sorted-direction="ascending"]:after {
+	  border-bottom-color: #0af;
+	  top:0;
+	}
+	</style>
+</head>
+<body>	
+	
+	<form id='list' method='post'><input type='hidden' name='form-name' value='list' />
+		<input id="myList" placeholder="ids ie 2801,19002,4334" class="hidden">
+		<input type="submit" style="display:none">
+	</form>
+	
+	<br>
+	<div class="clean">
+		<input type="button" class="sub clear" value="Rensa kurser" id="clearCache" onclick="clearCache(['orderbook','history']); this.value = 'All cleared';this.classList.add('on');sc=this;setTimeout(function(){ sc.value = 'Rensa cache'; sc.classList.remove('on'); }, 500)">
+		<input type="button" class="sub clear" value="Rensa info" id="clearCache" onclick="clearCache('info'); this.value = 'All cleared';this.classList.add('on');sc=this;setTimeout(function(){ sc.value = 'Rensa info'; sc.classList.remove('on'); }, 500)">
+		<input type="button" class="sub clear" value="Rensa listor" id="clearCache" onclick="clearCache('lists'); this.value = 'All cleared';this.classList.add('on');sc=this;setTimeout(function(){ sc.value = 'Rensa lists'; sc.classList.remove('on'); }, 500)">
+		<input type="button" class="sub clear" value="Rensa allt" id="clearCache" onclick="clearCache(['orderbook','history','lists','info']); this.value = 'All cleared';this.classList.add('on');sc=this;setTimeout(function(){ sc.value = 'Rensa allt'; sc.classList.remove('on'); }, 500)" title="Rensar allt, inklusive dina egna listor">
+	</div>
+	
+	
+	<!-- percent counter top overlay -->
+	<div id="percentCount" style="width:0%">Laddar</div>
+	
+	<h3>Listor</h3>
+	<section id="lists"></section>
+	<br>
+	<button id="addButton" onclick="add(this)">Ny</button>
+	<div id="addList" class="hidden">
+		<form id='addListForm' method='post'><input type='hidden' name='form-name' value='addListForm' />
+			<input type="text" class="list_name" pattern="[a-zA-Z0-9\s]+" placeholder="Namn på lista" value="min lista">
+			<input type="text" class="list_ids" pattern="[0-9,]+" placeholder="Avanza ID-nummer ex: 19002,2801,2802" style="width:100%" value="19002,2802">
+			<br><br>
+			<input type="submit" value="Lägg till/redigera">
+		</form>
+		<br><br>
+	</div>
+	
+	<section id="output"></section>
+	
+</body>
+
+
+<script src="assets/jquery/3.2.1/jquery.js"></script>
+<script src="assets/sortable.min.js"></script>
+<script>
+
+// takes string, returns false or cached result
+function isCached( cacheKey ){
+	return localStorage.getItem(cacheKey);
+}
+
+</script>
+<script src="class.avanza.js?v=2"></script>
+<script src="class.myLists.js?v=2"></script>
+<script>
+
+/* init lists */
+let lists = new myLists();
+let default_lists = lists.get_lists();
+let sort = 'priceThreeMonthsAgo';
+let ma = '6,10';
+let idList = Object.values(default_lists)[0];
+
+/* init */
+let az = new Avanza({
+	//'sort_default': 'priceOneMonthAgo desc'
+	//'proxies': [''] // use for dev, requires CORS-plugin for chrome or something to remove CORS restriction
+});
+
+
+// output func
+function output( az, idList, ma, sort ){
+	
+	az = az || new Avanza();
+	
+	idList = idList.split(',');
+	ma = ma || '6,10';
+	sort = sort || 'priceThreeMonthsAgo';
+	
+	ma = ma.split(',');
+	
+	az.lists(idList, ma, function(data)
+	{
+		// create table
+		az.table(data, null, sort, function(html)
+		{
+			$('#output').html( html );
+			Sortable.init(); // re-init table sorting
+		});
+	});
+
+}
+
+output( az, idList, '6,10' );
+
+
+let list = $('#list');
+
+list.on('submit', function(e){
+	e.preventDefault();
+	let idList = document.getElementById('myList').value; 
+	output( az, idList, ma );
+})
+
+
+
+
+/* add */
+function add(el)
+{
+	el = $(el);
+	let addList = $('#addList');
+	
+	addList.toggleClass('hidden');
+	addList.find('.list_name').focus();
+
+	el.text(el.text() == 'Ny' ? 'Dölj' : 'Ny');
+	
+}
+
+
+$('#addListForm').on('submit', function(e){
+	e.preventDefault();
+	
+	let lists,
+		ls = localStorage,
+		new_name,
+		new_ids,
+		$t = $(this);
+	
+	if( ls.getItem('lists') ) {
+		lists = JSON.parse(ls.getItem('lists'));
+	}
+	else {
+		lists = {}; // create new object
+	}
+	
+	new_name = $t.find('.list_name').val();
+	new_ids = $t.find('.list_ids').val();
+	
+	new_name = new_name.replace(/ /g, '_'); // replace spaces with underscore
+	
+	// remove old (is update)
+	if( lists[new_name] ){
+		delete lists[new_name];
+	}
+	
+	// create temporary object to add to beginning of array
+	let temp = {};
+	temp[new_name] = new_ids;
+	for(let key in lists){
+		temp[key] = lists[key];
+	}
+	
+	// add
+	lists = temp;
+	lists = JSON.stringify(lists); // turn into json string
+	ls.setItem('lists', lists); // add to localStorage
+	
+	let tmp = new myLists();
+	tmp=null;
+	temp=null;
+	
+})
+
+
+// remove
+var domLists = $('#lists');
+domLists.on('click', '.remove', function(e){
+	e.preventDefault();
+	
+	let $t = $(this),
+		target = $t.data('rel'),
+		lists = localStorage.getItem('lists');
+	
+	lists = JSON.parse(lists);
+	
+	delete lists[target];
+	console.log(lists);
+	
+	// set new
+	lists = JSON.stringify(lists);
+	localStorage.setItem('lists', lists);
+	
+	let tmp = new myLists();
+	tmp=null;
+})
+
+// edit
+domLists.on('click', '.edit', function(e){
+	e.preventDefault();
+	
+	let $t = $(this),
+		target = $t.data('rel'),
+		lists = localStorage.getItem('lists');
+		
+	let cur = lists[target],
+		form = $('#addListForm'),
+		name = target;
+		
+	name = name.replace(/_/g, ' ');
+	let values = $t.parent().find('.list').data('list');
+		
+	form.find('.list_name')[0].value = name;
+	form.find('.list_ids')[0].value = values;
+	
+	$('#addButton').text('Ny');
+	$('#addList').addClass('hidden');
+	add('#addButton');
+	
+})
+
+domLists.on('click', 'button', function(){
+	let $t = $(this);
+	$t.parent().parent().find('button').removeClass('on');
+	$t.addClass('on');
+})
+
+
+
+/* doubleClicks */
+$('#output').on('dblclick', 'tr', function(){
+	$(this).toggleClass('on');
+})
+
+
+
+/*
+	clearCache
+	clearCache( key to search for )
+*/
+function clearCache( search )
+{
+	
+	search = search || false;
+
+	if( search )
+	{
+		if( Array.isArray( search ) ){
+			let i=0, len = search.length;
+			for(i;i<len;i++)
+			{
+				__c( search[i] );
+			}
+		}
+		else
+		{
+			__c( search );
+		}
+		
+		function __c(s){
+		
+			let arr = [],
+			i = 0, len = localStorage.length;
+		
+			for( i;i<len;i++ )
+			{
+				if( localStorage.key(i).indexOf( s ) > -1 )
+				{
+					arr.push(localStorage.key(i));
+				}
+			}
+			
+			i=0,len=arr.length;
+			for(i;i<len;i++)
+			{
+				localStorage.removeItem(arr[i]);
+			}
+		}
+	}
+	
+}
+
+
+
+
+// localStorage extension with cache-busting
+// use: ls.get('KEY') || ls.set('KEY', <data>, <time in hours>)
+
+$(function(){
+    function now() {return+new Date}
+    var ls = window.db = {
+        get  : function(key) {
+            var entry = JSON.parse(localStorage.getItem(key)||"0");
+            if (!entry) return null;
+            if (entry.ttl && entry.ttl + entry.now < now()) {
+                localStorage.removeItem(key);
+                return null;
+            }
+            return entry.value;
+        },
+        set : function( key, value, ttl ) {
+            localStorage.setItem( key, JSON.stringify({
+                ttl   : ttl*3600000 || 0, // 3 600 000 = 1 hour in ms
+                now   : now(),
+                value : value
+            }) );
+        }
+    };
+});
+
+
+
+
+
+</script>
