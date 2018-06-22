@@ -4,6 +4,10 @@ var az = require('../app/avanza');
 
 var ids = [1933, 2801];
 
+az.nav(2801, function (data, err) { // Change to promise
+  if (err) return;
+
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
