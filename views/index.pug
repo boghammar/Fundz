@@ -37,9 +37,9 @@ block content
               td=fund.id
               td
                 a(href='https://www.avanza.se/fonder/om-fonden.html/' + fund.id target='_blank') #{fund.name}
-              td=fund.type
-              td=fund.fee
-              td=fund.threeMonths
-              td=fund.updated
+              td=fund.history.type
+              td=fund.history.managementFee
+              td=fund.history.changeSinceThreeMonths
+              td=fund.history.NAVLastUpdated
               td=fund.sma6
               td=fund.sma10

@@ -19,7 +19,7 @@ class Avanza {
 			'post_default':
 			{
 				'orderbookId': 2801,
-				'chartResolution':  "MONTH", // MONTH, DAY, WEEK, QUARTER
+				'chartResolution':  "DAY", // MONTH, DAY, WEEK, QUARTER
 				'navigator': false,
 				'percentage':  false, // 'true' show returns in percent
 				'timePeriod':  "year", // month, year, three_years, ten_years
@@ -33,6 +33,31 @@ class Avanza {
 
         this.config = config;
 
+    }
+
+    // ------------------------------------------------------------------------
+    history(id, callback, opts) {
+        let url = this.config.urls.base + this.config.urls.fund;
+        url = url.replace('{id}', id);
+
+        let opt = {
+            method: 'GET',
+            uri: url,
+            json: true,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Credentials': 'true'
+            },
+        }
+
+        request(opt)
+            .then(function (data){
+                callback(data);
+            })
+            .catch(function (err){
+
+            });
     }
 
     // ------------------------------------------------------------------------
