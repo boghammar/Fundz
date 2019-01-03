@@ -9,7 +9,7 @@ var funds = [];
 ids.forEach( function(id) {
   let fund = {id: id};
   az.history(id, function (data, err) { // Change to promise
-    if (err) {console.log("Error getting history for id="+id + ": ");return;}
+    if (err) {console.log("Error getting history for id="+id + ": "+ err);return;}
     fund.name = data.name;
     fund.history = data;
     funds.push(fund);

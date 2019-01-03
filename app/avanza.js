@@ -5,6 +5,8 @@
  * 
  */
 const request = require('request-promise');
+var HttpsProxyAgent = require('https-proxy-agent');
+var Url = require('url');
 
 class Avanza {
 
@@ -28,7 +30,8 @@ class Avanza {
 				'volume': false,
 				'ta': [], // can be omitted, else *must* contain array
 				'period': false, // false -OR- max
-			},
+            },
+            //'proxy': 'https://gia.sebank.se:8080', // http://gia.sebank.se:8080',
         }
 
         this.config = config;
@@ -50,13 +53,21 @@ class Avanza {
                 'Access-Control-Allow-Credentials': 'true'
             },
         }
+        log('Calling ' + url);
+
+        if (this.config.proxy !== undefined) {
+            var xx = Url.parse(this.config.proxy);
+            opt.agent = new HttpsProxyAgent(xx);
+            log('Using proxy ' + this.config.proxy);
+        }
 
         request(opt)
             .then(function (data){
                 callback(data);
             })
             .catch(function (err){
-
+                log('Problems: ' + err);
+                callback(undefined, err);
             });
     }
 
@@ -108,6 +119,20 @@ class Avanza {
 		
 		return d.getFullYear() + '-' + month + '-' + day;
 	}
+}
+
+// --------------------------------------- At beginning of log entries
+function logStart() {
+    return (new Date(Date.now())).toLocaleTimeString() + " Avanza: ";
+}
+
+// --------------------------------------- Logging
+function log(msg) {
+    console.log(logStart() + msg);
+}
+// --------------------------------------- Debugging
+function debug(msg) {
+    if (debugMe) log(msg);
 }
 
 var az = new Avanza()
