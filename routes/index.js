@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var az = require('../app/avanza');
+var config = require('../config');
 
-var ids = [1933, 2801, 482298, 181108];
+var ids = config.fundids; //[1933, 2801, 482298, 181108];
 
 var funds = [];
 

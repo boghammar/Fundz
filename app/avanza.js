@@ -7,32 +7,30 @@
 const request = require('request-promise');
 var HttpsProxyAgent = require('https-proxy-agent');
 var Url = require('url');
+var config = require('../config');
 
 class Avanza {
 
     // ------------------------------------------------------------------------
 	constructor( options = false ) {
-        let config = {
-            'urls': {
-                'base': 'https://www.avanza.se/',
-				'fund': '_mobile/market/fund/{id}', // GET Get all info on an instrument including latest NAV, description, various changes etz
-				'nav': 'ab/component/highstockchart/getchart/orderbook', // POST Retreives NAV over a period specified by the POST body
-            },
-			'post_default':
-			{
-				'orderbookId': 2801,
-				'chartResolution':  "DAY", // MONTH, DAY, WEEK, QUARTER
-				'navigator': false,
-				'percentage':  false, // 'true' show returns in percent
-				'timePeriod':  "year", // month, year, three_years, ten_years
-				'chartType':  "AREA",
-				'owners': false,
-				'volume': false,
-				'ta': [], // can be omitted, else *must* contain array
-				'period': false, // false -OR- max
-            },
-            //'proxy': 'https://gia.sebank.se:8080', // http://gia.sebank.se:8080',
-        }
+        config.urls= {
+            'base': 'https://www.avanza.se/',
+            'fund': '_mobile/market/fund/{id}', // GET Get all info on an instrument including latest NAV, description, various changes etz
+            'nav': 'ab/component/highstockchart/getchart/orderbook', // POST Retreives NAV over a period specified by the POST body
+        };
+        config.post_default = {
+            'orderbookId': 2801,
+            'chartResolution':  "DAY", // MONTH, DAY, WEEK, QUARTER
+            'navigator': false,
+            'percentage':  false, // 'true' show returns in percent
+            'timePeriod':  "year", // month, year, three_years, ten_years
+            'chartType':  "AREA",
+            'owners': false,
+            'volume': false,
+            'ta': [], // can be omitted, else *must* contain array
+            'period': false, // false -OR- max
+        };
+        //'proxy': 'https://gia.sebank.se:8080', // http://gia.sebank.se:8080',
 
         this.config = config;
 
